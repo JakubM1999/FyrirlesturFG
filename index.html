@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hönnun og Forritun - Jakub Mierzejek</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #e8e8e1;
+            --text-main: #1a1a1a;
+            --accent: #ff4500;
+            --accent-2: #0066ff;
+            --grid-color: rgba(0, 0, 0, 0.05);
+        }
+body {
+    background-color: var(--bg-color);
+    background-image: 
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: var(--text-main);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.reveal .slides { text-align: left; }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif !important;
+            text-transform: uppercase;
+            font-weight: 700 !important;
+            letter-spacing: -0.02em;
+            color: var(--text-main) !important;
+            margin: 0 0 20px 0 !important;
+        }
+
+        p, ul, li {
+            font-family: 'Space Mono', monospace !important;
+            color: var(--text-main) !important;
+            font-size: 1.6rem !important;
+        }
+
+        .raw-title {
+            font-size: 8rem !important;
+            line-height: 0.9 !important;
+            word-wrap: break-word;
+            border-bottom: 12px solid var(--text-main);
+            display: inline-block;
+            padding-bottom: 15px;
+            margin-bottom: 40px !important;
+            transform-origin: left;
+        }
+
+        .accent-text { color: var(--accent) !important; }
+        .blue-text { color: var(--accent-2) !important; }
+        
+        .box-container {
+            border: 6px solid var(--text-main);
+            padding: 50px;
+            position: relative;
+            background: white;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Hardware acceleration to prevent blurriness */
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        .box-container::before {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px; right: -15px; bottom: -15px;
+            border: 6px solid var(--accent);
+            z-index: -1;
+            transition: all 0.3s ease;
+            transform: translateZ(0);
+        }
+
+        .image-frame {
+            border: 6px solid var(--text-main);
+            padding: 15px;
+            background: white;
+            transform: rotate(-2deg) translateZ(0);
+            max-width: 900px;
+            display: inline-block;
+            box-shadow: 20px 20px 0px var(--accent-2);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backface-visibility: hidden;
+        }
+
+        .image-frame:hover {
+            transform: rotate(0deg) scale(1.02);
+            box-shadow: 30px 30px 0px var(--accent);
+        }
+
+        .image-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .grid-img-large {
+            grid-template-columns: 0.8fr 1.2fr !important;
+        }
+
+        .mono-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 3px solid var(--text-main);
+            padding: 10px 20px;
+            display: inline-block;
+            margin-bottom: 30px;
+            background: white;
+            font-weight: bold;
+        }
+
+        ul.raw-list {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        ul.raw-list li {
+            border-bottom: 3px solid var(--grid-color);
+            padding: 20px 0 !important;
+            font-size: 2rem !important;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .present ul.raw-list li { animation: slideInRight 0.4s forwards; }
+        ul.raw-list li:nth-child(1) { animation-delay: 0.3s; }
+        ul.raw-list li:nth-child(2) { animation-delay: 0.4s; }
+        ul.raw-list li:nth-child(3) { animation-delay: 0.5s; }
+        ul.raw-list li:nth-child(4) { animation-delay: 0.6s; }
+        ul.raw-list li:nth-child(5) { animation-delay: 0.7s; }
+        ul.raw-list li:nth-child(6) { animation-delay: 0.8s; }
+
+        ul.raw-list li::before {
+            content: '>';
+            color: var(--accent);
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        @keyframes slideInRight { to { opacity: 1; transform: translateX(0); } }
+        @keyframes titlePop {
+            0% { transform: scaleX(0); opacity: 0; }
+            100% { transform: scaleX(1); opacity: 1; }
+        }
+        @keyframes boxPop {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .present .raw-title { animation: titlePop 0.5s cubic-bezier(0.23, 1, 0.32, 1) both; }
+        .present .box-container, .present .image-frame { 
+            animation: boxPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+            animation-delay: 0.2s;
+        }
+
+        .reveal .controls { color: var(--text-main) !important; }
+        .reveal .progress { color: var(--accent) !important; }
+        
+        .small-caps { font-variant: small-caps; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Intro -->
+            <section class="center-content">
+                <div class="mono-tag">[ 01_HALLÓ ]</div>
+                <h1 class="raw-title" style="font-size: 8rem !important; text-align: center;">HÆ <span class="accent-text">FG!</span></h1>
+                <h2 style="font-size: 3rem !important; text-align: center;">Ég heiti <span class="blue-text">Jakub Mierzejek</span></h2>
+                <p style="margin-top: 30px; font-size: 1.5rem !important;">Hönnuður, forritari og kennari.</p>
+            </section>
+
+            <!-- Slide 2: Dagskrá -->
+            <section>
+                <div class="mono-tag">[ 02_DAGSKRÁ ]</div>
+                <h1 class="raw-title" style="font-size: 4rem !important;">Hvað er <span class="accent-text">planið?</span></h1>
+                
+                <div class="grid-layout" style="align-items: start;">
+                    <div class="box-container">
+                        <h3 class="blue-text" style="font-size: 1.8rem !important;">Í dag</h3>
+                        <ul class="raw-list" style="font-size: 1.5rem !important;">
+                            <li>Kynning og mín saga</li>
+                            <li>Sækjum um Figma nemendaaðgang</li>
+                            <li>Hefjum endurhönnun (ef tími gefst)</li>
+                        </ul>
+                    </div>
+                    <div class="box-container" style="background: var(--text-main);">
+                        <h3 style="color: white !important; font-size: 1.8rem !important;">Fimmtudagur</h3>
+                        <ul class="raw-list" style="color: white !important; font-size: 1.5rem !important;">
+                            <li style="color: white !important;">Áframhaldandi hönnun</li>
+                            <li style="color: white !important;">Spurningar og svör</li>
+                            <li style="color: white !important;">Umsagnir um Figma</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: Hver er ég? -->
+            <section>
+                <div class="mono-tag">[ 03_PROFILE ]</div>
+                <h1 class="raw-title">Hver er <span class="blue-text">ég?</span></h1>
+                <div class="grid-layout">
+                    <ul class="raw-list" style="font-size: 2.2rem !important;">
+                        <li>Prentsmiður</li>
+                        <li>Grafískur hönnuður</li>
+                        <li>Vefhönnuður</li>
+                        <li>Vefforritari</li>
+                        <li>Leikjaforritari</li>
+                        <li>Kennari</li>
+                    </ul>
+                    <div class="image-frame" style="transform: rotate(2deg); box-shadow: -15px 15px 0px var(--accent); max-width: 500px;">
+                         <img src="Frame 2045.png" alt="Jakub">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 4: Saga mín -->
+            <section>
+                <div class="mono-tag">[ 04_SAGA ]</div>
+                <h1 class="raw-title" style="font-size: 6rem !important;">Mín saga: <br><span class="accent-text">Frá prenti í forritun</span></h1>
+                <div class="box-container">
+                    <ul class="raw-list">
+                        <li>Búið á Íslandi í tæp 20 ár</li>
+                        <li>Útskrifaðist sem prentsmiður (Pixel)</li>
+                        <li>Lærði forritun í Vefskólanum</li>
+                        <li>Opnaði dyr að leikjaforritun</li>
+                        <li>Endaði sem hönnunarkennari</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 5: Hvernig er það búið að ganga -->
+            <section>
+                <div class="mono-tag">[ 05_REYSLA ]</div>
+                <h1 class="raw-title" style="font-size: 6rem !important;">Starfið <span class="blue-text">&</span> Erasmus</h1>
+                <div class="grid-layout grid-img-large">
+                    <div>
+                        <div class="box-container" style="border-right: 15px solid var(--accent-2);">
+                            <ul class="raw-list">
+                                <li>4+ ár í Vefskólanum (5. hópurinn á leiðinni)</li>
+                                <li>Kenni leikjaforritun</li>
+                                <li>Erasmus ferðir til Canarí</li>
+                                <li>Vinn í eigin tölvuleik</li>
+                            </ul>
+                        </div>
+                        <p style="font-size: 1.4rem !important; font-style: italic; opacity: 0.7; font-family: 'Space Mono', monospace; margin-top: 25px; transform: rotate(-2deg); margin-left: 20px;">Vilt þú vera hluti af þessum hóp? ;)</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="image-frame" style="transform: rotate(-1deg); box-shadow: 15px 15px 0px var(--accent);">
+                             <img src="IMG_4962_2_1.jpeg" alt="Erasmus travel">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 6: Leiðin -->
+            <section>
+                <div class="mono-tag">[ 06_HUGAFAR ]</div>
+                <h1 class="raw-title">Mín <span class="accent-text">leið.</span></h1>
+                <div class="box-container" style="background: var(--accent); color: white !important;">
+                    <ul class="raw-list" style="color: white !important;">
+                        <li style="color: white !important;">Forvitni og opinn hugur er lykillinn</li>
+                        <li style="color: white !important;">Forritun er hugafar, ekki bara kóði</li>
+                        <li style="color: white !important;">Það er hægt að læra ALLT</li>
+                        <li style="color: white !important;">Að taka vöru frá A-Ö er málið!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 7: Figma Action -->
+            <section>
+                <div class="mono-tag">[ 07_ACTION ]</div>
+                <h1 class="raw-title" style="font-size: 4.5rem !important;">Gerum eitthvað <span class="blue-text">í Figma!</span></h1>
+                <div class="box-container">
+                    <ul class="raw-list">
+                        <li>Sækjum um Education Plan saman</li>
+                        <li>Endurhönnum vefsíðu og gerum hana betri</li>
+                        <li>Ég sýni ykkur mín vinnubrögð á töflu</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 8: Endurhönnun -->
+            <section>
+                <div class="mono-tag">[ 08_PROJECT ]</div>
+                <h1 class="raw-title" style="font-size: 5rem !important;">Endurhönnun á <span class="accent-text">vefsíðu</span></h1>
+                <div class="box-container" style="border-bottom: 15px solid var(--accent-2);">
+                    <ul class="raw-list">
+                        <li>Eftir að allir hafa fengið Figma aðgang skulum við byrja.</li>
+                        <li>Við ætlum að búa til að minnsta kosti 2 síður.</li>
+                        <li>Tengja þær saman (virkt Prototype).</li>
+                        <li>Læra hvernig á að búa til Components.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'fade',
+            backgroundTransition: 'none',
+            center: true,
+            margin: 0.05,
+            controls: true,
+            progress: true,
+            width: 1920,
+            height: 1080,
+        });
+    </script>
+</body>
+</html>
